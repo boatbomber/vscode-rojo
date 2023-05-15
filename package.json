@@ -3,17 +3,18 @@
   "displayName": "Rojo - Roblox Studio Sync",
   "description": "Rojo for VS Code",
   "version": "2.1.2",
-  "repository": "https://github.com/rojo-rbx/vscode-rojo",
+  "repository": {
+    "url": "https://github.com/rojo-rbx/vscode-rojo"
+  },
   "publisher": "evaera",
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.78.2"
   },
   "icon": "assets/extension-icon.png",
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-rojo.openMenu",
     "workspaceContains:*.project.json"
   ],
   "main": "./dist/extension.js",
@@ -23,8 +24,59 @@
         "command": "vscode-rojo.openMenu",
         "title": "Open Menu",
         "category": "Rojo"
+      },
+      {
+        "command": "vscode-rojo.serveProject",
+        "title": "Serve",
+        "category": "Rojo",
+        "icon": "$(testing-run-all-icon)"
+      },
+      {
+        "command": "vscode-rojo.buildProject",
+        "title": "Build",
+        "category": "Rojo",
+        "icon": "$(wrench)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vscode-rojo",
+          "title": "Rojo",
+          "icon": "assets/rojo-icon.png"
+        }
+      ]
+    },
+    "views": {
+      "vscode-rojo": [
+        {
+          "id": "vscode-rojo.projects",
+          "name": "Projects",
+          "icon": "assets/rojo-icon.png",
+          "contextualTitle": "Rojo Projects"
+        },
+        {
+          "id": "vscode-rojo.projectDetails",
+          "name": "Project Details",
+          "icon": "assets/rojo-icon.png",
+          "contextualTitle": "Project Details"
+        }
+      ]
+    },
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "vscode-rojo.serveProject",
+          "when": "view == vscode-rojo.projects",
+          "group": "inline@1"
+        },
+        {
+          "command": "vscode-rojo.buildProject",
+          "when": "view == vscode-rojo.projects",
+          "group": "inline@2"
+        }
+      ]
+    },
     "jsonValidation": [
       {
         "fileMatch": "*.project.json",

@@ -2,9 +2,16 @@ import * as vscode from "vscode"
 import * as commands from "./commands"
 import { RunningProject } from "./serveProject"
 import { updateButton } from "./updateButton"
+import {
+  RojoProjectsProvider,
+  RojoProjectListing,
+  RojoProjectDetailsProvider,
+} from "./treeView"
 
 export type State = {
   resumeButton: vscode.StatusBarItem
+  projectsView: vscode.TreeView<RojoProjectListing>
+  projectDetailsView: vscode.TreeView<unknown>
   running: { [index: string]: RunningProject }
   context: vscode.ExtensionContext
 }
@@ -14,14 +21,35 @@ let cleanup: undefined | (() => void)
 export function activate(context: vscode.ExtensionContext) {
   console.log("vscode-rojo activated")
 
+  const projectsTree = new RojoProjectsProvider()
+  const detailsTree = new RojoProjectDetailsProvider()
+
   const state: State = {
     resumeButton: vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Right,
       199
     ),
+    projectsView: vscode.window.createTreeView("vscode-rojo.projects", {
+      treeDataProvider: projectsTree,
+    }),
+    projectDetailsView: vscode.window.createTreeView(
+      "vscode-rojo.projectDetails",
+      {
+        treeDataProvider: detailsTree,
+      }
+    ),
     running: {},
     context,
   }
+
+  state.projectsView.onDidChangeSelection((event) => {
+    if (!event.selection[0]) {
+      detailsTree.setProject(undefined)
+      return
+    }
+
+    detailsTree.setProject(event.selection[0].path)
+  })
 
   const button = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right,
