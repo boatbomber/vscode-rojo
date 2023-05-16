@@ -33,7 +33,10 @@ export const serveProjectCommand = (state: State) =>
             }
           }
         } catch (e) {
-          // fall through
+          vscode.window.showErrorMessage(
+            "Rojo: Something went wrong when starting rojo. Error: " +
+              (e as any).toString()
+          )
         }
       }
 
@@ -68,7 +71,10 @@ export const buildProjectCommand = (state: State) =>
             }
           }
         } catch (e) {
-          // fall through
+          vscode.window.showErrorMessage(
+            "Rojo: Something went wrong while building. Error: " +
+              (e as any).toString()
+          )
         }
       }
 
